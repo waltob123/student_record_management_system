@@ -44,6 +44,7 @@ and only characters')
         self.__gpa = gpa
         self.__id = Student.generate_student_id()
         self.__next = None
+        self.__previous = None
 
     # getters and setters
     @property
@@ -66,35 +67,46 @@ and only characters')
     def next(self):
         return self.__next
 
+    @property
+    def previous(self):
+        return self.__previous
+
     @name.setter
-    def name(self, name: str) -> None:
-        if not isinstance(name, str):
-            raise TypeError(f'{name} must be string')
-        if len(name) < 1 or not name.isalpha():
-            raise ValueError(f'{name} must not be empty and only characters')
-        self.__name = name
+    def name(self, name_value: str) -> None:
+        if not isinstance(name_value, str):
+            raise TypeError(f'{name_value} must be string')
+        if len(name_value) < 1 or not re.fullmatch(r'[a-zA-Z ]+', name_value):
+            raise ValueError(f'{name_value} must not be empty and only characters')
+        self.__name = name_value
 
     @program.setter
-    def program(self, program: str) -> None:
-        if not isinstance(program, str):
-            raise TypeError(f'{program} must be string')
-        if len(program) < 1 or not re.fullmatch(r'[a-zA-Z ]+', program):
-            raise ValueError(f'{program} must not be empty \
+    def program(self, program_value: str) -> None:
+        if not isinstance(program_value, str):
+            raise TypeError(f'{program_value} must be string')
+        if len(program_value) < 1 or not re.fullmatch(r'[a-zA-Z ]+', program_value):
+            raise ValueError(f'{program_value} must not be empty \
 and only characters')
-        self.__program = program
+        self.__program = program_value
 
     @gpa.setter
-    def gpa(self, gpa: float) -> None:
-        if not isinstance(gpa, float):
-            raise TypeError(f'{gpa} must be float')
-        self.__gpa = gpa
+    def gpa(self, gpa_value: float) -> None:
+        if not isinstance(gpa_value, float):
+            raise TypeError(f'{gpa_value} must be float')
+        self.__gpa = gpa_value
 
     @next.setter
-    def next(self, next):
-        if isinstance(next, Student) or next is None:
-            self.__next = next
+    def next(self, next_value):
+        if isinstance(next_value, Student) or next_value is None:
+            self.__next = next_value
         else:
-            raise TypeError(f'{next} must be Student')
+            raise TypeError(f'{next_value} must be Student')
+
+    @previous.setter
+    def previous(self, previous_value):
+        if isinstance(previous_value, Student) or previous_value is None:
+            self.__previous = previous_value
+        else:
+            raise TypeError(f'{previous_value} must be Student')
 
     @classmethod
     def generate_student_id(cls) -> None:

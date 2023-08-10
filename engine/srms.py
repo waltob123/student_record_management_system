@@ -37,6 +37,7 @@ class SRMS:
         if not self.search_student(student.id):
             temp = self.head
             self.head = student
+            temp.previous = student
             student.next = temp
             return f'Student {student.id} added successfully!'
 
@@ -60,9 +61,11 @@ class SRMS:
             return f'Student {student.id} added successfully!'
         else:
             student_position = self.search_student(student_id)
-            temp = student_position.next
-            student_position.next = student
-            student.next = temp
+            temp = student_position # set student_position to temp
+            temp.previous.next = student # set the next value of the temp' next to student
+            student.previous = temp.previous # set the student's previous to temp's previous
+            student.next = temp # set student's next value to temp
+            temp.previous = student # set temp's previous to student
             return f'Student {student.id} added successfully!'
 
     def insert_student_at_end(self, student: Student) -> str:
@@ -84,6 +87,7 @@ class SRMS:
             while temp.next is not None:
                 temp = temp.next
             temp.next = student
+            student.previous = temp
             return f'Student {student.id} added successfully!'
         else:
             self.insert_student_at_start(student)
@@ -122,4 +126,18 @@ class SRMS:
                 temp = temp.next
 
     def delete_student(self, student_id: str) -> None:
-        ''''''
+        '''
+        Deletes a student from the linked list.
+
+        Args:
+            `student_id (str)`: student to delete
+        '''
+        student = self.search_student(student_id)
+        if not student:
+            return None
+        if student.id == self.head.id:
+            self.head = self.head.next
+            self.head.previous = None
+        else:
+            student.previous.next = student.next
+        return student
