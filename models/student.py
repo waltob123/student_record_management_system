@@ -12,7 +12,8 @@ class Student:
     A class that defines a student.
     '''
 
-    def __init__(self, name: str, program: str, gpa: float = 0.0) -> None:
+    def __init__(self, name: str, program: str, gpa: float = 0.0,
+                 id: str = None) -> None:
         '''Initializes a new instance of a student
 
         Args:
@@ -31,18 +32,27 @@ class Student:
             raise TypeError(f'{program} must be string')
         if not isinstance(gpa, float):
             raise TypeError(f'{gpa} must be float')
+        if id is not None and not isinstance(id, str):
+            raise TypeError(f'{id} must be string')
 
         # check value of arguments
-        if len(name) < 1 or not name.isalpha():
+        if len(name) < 1 or not re.fullmatch(r'[a-zA-Z. ]+', name):
             raise ValueError(f'{name} must not be empty and only characters')
-        if len(program) < 1 or not re.fullmatch(r'[a-zA-Z ]+', program):
+        if len(program) < 1 or not re.fullmatch(r'[a-zA-Z. ]+', program):
             raise ValueError(f'{program} must not be empty \
 and only characters')
+        if id is not None:
+            try:
+                new_id = uuid.UUID(id)
+            except ValueError as err:
+                raise ValueError(f'{id} is not valid')
+            self.__id = str(new_id)
+        else:
+            self.__id = Student.generate_student_id()
 
         self.__name = name
         self.__program = program
         self.__gpa = gpa
-        self.__id = Student.generate_student_id()
         self.__next = None
         self.__previous = None
 
@@ -107,6 +117,18 @@ and only characters')
             self.__previous = previous_value
         else:
             raise TypeError(f'{previous_value} must be Student')
+
+    def to_dict(self) -> dict:
+        '''converts student attributes to dictionary'''
+        student_dict = {}
+        student_dict['name'] = self.name
+        student_dict['gpa'] = self.gpa
+        student_dict['program'] = self.program
+        student_dict['next'] = self.next
+        student_dict['previous'] = self.previous
+        student_dict['id'] = self.id
+
+        return student_dict
 
     @classmethod
     def generate_student_id(cls) -> None:
