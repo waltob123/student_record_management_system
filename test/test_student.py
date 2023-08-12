@@ -16,7 +16,7 @@ class TestStudent(unittest.TestCase):
         self.student_a = Student('John F. Kennedy', 'Politics', 2.8)
 
     def tearDown(self) -> None:
-        pass
+        return
 
     def test_instance_initializing(self):
         self.assertIsInstance(self.student_a, Student)

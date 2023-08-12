@@ -14,9 +14,13 @@ class SRMS:
     def __init__(self) -> None:
         '''Initializes a Student Record Management System
         with head equal to None'''
-        self.head = None
+        self.__head = None
 
-    def insert_student_at_start(self, student: Student) -> str:
+    @property
+    def head(self) -> Student:
+        return self.__head
+
+    def insert_student_at_start(self, student: Student) -> Student:
         '''
         Inserts a student at the start of linked list.
 
@@ -24,25 +28,22 @@ class SRMS:
             `student (Student)`: student object to insert
 
         Return:
-            `message (str)`: success or failure
+            `student (Student)`: student inserted
         '''
-        # check if head is empty
-        if self.search_student(student.id):
-            return f'Student {student.id} already exists!'
+        SRMS.check_if_student_exists(student.id)
 
-        if self.head is None and not self.search_student(student.id):
-            self.head = student
-            return f'Student {student.id} added successfully!'
+        if self.__head is None:
+            self.__head = student
+            return student
 
-        if not self.search_student(student.id):
-            temp = self.head
-            self.head = student
-            temp.previous = student
-            student.next = temp
-            return f'Student {student.id} added successfully!'
+        temp = self.__head
+        self.__head = student
+        temp.previous = student
+        student.next = temp
+        return student
 
     def insert_student_at_position(self, student: Student,
-                                   student_id: str) -> str:
+                                   student_id: str) -> Student:
         '''
         Inserts a student at a position
 
@@ -51,24 +52,22 @@ class SRMS:
             `student_id` (str): where to insert student object
 
         Return:
-            `message (str)`: success or failure
+            `student (Student)`: student inserted
         '''
-        if self.search_student(student.id):
-            return f'Student {student.id} already exists!'
+        SRMS.check_if_student_exists(student.id)
 
-        if self.head is None:
-            self.insert_student_at_start(student)
-            return f'Student {student.id} added successfully!'
-        else:
-            student_position = self.search_student(student_id)
-            temp = student_position # set student_position to temp
-            temp.previous.next = student # set the next value of the temp' next to student
-            student.previous = temp.previous # set the student's previous to temp's previous
-            student.next = temp # set student's next value to temp
-            temp.previous = student # set temp's previous to student
-            return f'Student {student.id} added successfully!'
+        if self.__head is None:
+            return self.insert_student_at_start(student)
 
-    def insert_student_at_end(self, student: Student) -> str:
+        student_position = self.search_student(student_id)
+        temp = student_position # set student_position to temp
+        temp.previous.next = student # set the next value of the temp' next to student
+        student.previous = temp.previous # set the student's previous to temp's previous
+        student.next = temp # set student's next value to temp
+        temp.previous = student # set temp's previous to student
+        return student
+
+    def insert_student_at_end(self, student: Student) -> Student:
         '''
         Inserts a student at the end of linked list
 
@@ -76,19 +75,18 @@ class SRMS:
             `student (Student)`: student object to insert
 
         Return:
-            `message (str)`: success or failure
+            `student (Student)`: student inserted
         '''
-        if self.search_student(student.id):
-            return f'Student {student.id} already exists!'
+        SRMS.check_if_student_exists(student.id)
 
-        if self.head is not None:
-            temp = self.head
+        if self.__head is not None:
+            temp = self.__head
 
             while temp.next is not None:
                 temp = temp.next
             temp.next = student
             student.previous = temp
-            return f'Student {student.id} added successfully!'
+            return student
         else:
             self.insert_student_at_start(student)
 
@@ -102,8 +100,8 @@ class SRMS:
         Return:
             `Student or False`: student object or False
         '''
-        if self.head is not None:
-            temp = self.head
+        if self.__head is not None:
+            temp = self.__head
 
             while temp is not None:
                 if temp.id == student_id:
@@ -116,16 +114,16 @@ class SRMS:
         '''
         prints all students to screen
         '''
-        if self.head is None:
+        if self.__head is None:
             print('No students available!')
         else:
-            temp = self.head
+            temp = self.__head
 
             while temp is not None:
                 print(temp)
                 temp = temp.next
 
-    def delete_student(self, student_id: str) -> None:
+    def delete_student(self, student_id: str) -> Student:
         '''
         Deletes a student from the linked list.
 
@@ -135,9 +133,14 @@ class SRMS:
         student = self.search_student(student_id)
         if not student:
             return None
-        if student.id == self.head.id:
-            self.head = self.head.next
-            self.head.previous = None
+        if student.id == self.__head.id:
+            self.__head = self.__head.next
+            self.__head.previous = None
         else:
             student.previous.next = student.next
         return student
+
+    @classmethod
+    def check_if_student_exists(cls, student_id: str) -> None:
+        if cls.search_student(student_id=student_id):
+            raise Exception(f'Student {student_id} already exists!')
