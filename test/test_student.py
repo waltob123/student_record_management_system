@@ -1,3 +1,8 @@
+#!/usr/bin/python3
+'''
+test_student module
+'''
+
 import unittest
 from models.student import Student
 
@@ -7,10 +12,14 @@ class TestStudent(unittest.TestCase):
     A test class that tests the student's model
     '''
 
-    def test_instance_initializing(self):
-        student_a = Student('John F. Kennedy', 'Politics', 2.8)
+    def setUp(self) -> None:
+        self.student_a = Student('John F. Kennedy', 'Politics', 2.8)
 
-        self.assertIsInstance(student_a, Student)
+    def tearDown(self) -> None:
+        pass
+
+    def test_instance_initializing(self):
+        self.assertIsInstance(self.student_a, Student)
         self.assertRaises(ValueError, Student, name='Juda123 Benhur',
                           program='Computer Science', gpa=3.0)
         self.assertRaises(ValueError, Student, name='Obed Osei',
@@ -31,10 +40,9 @@ class TestStudent(unittest.TestCase):
                           program='Economics', gpa=2.9, id='1234')
 
     def test_to_dict(self):
-        student_a = Student('John F. Kennedy', 'Politics', 2.8)
-        self.assertDictEqual(student_a.to_dict(), {
+        self.assertDictEqual(self.student_a.to_dict(), {
             'name': 'John F. Kennedy',
-            'id': student_a.id,
+            'id': self.student_a.id,
             'program': 'Politics',
             'gpa': 2.8,
             'next': None,

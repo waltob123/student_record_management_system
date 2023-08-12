@@ -86,14 +86,16 @@ and only characters')
         if not isinstance(name_value, str):
             raise TypeError(f'{name_value} must be string')
         if len(name_value) < 1 or not re.fullmatch(r'[a-zA-Z ]+', name_value):
-            raise ValueError(f'{name_value} must not be empty and only characters')
+            raise ValueError(f'{name_value} must not be empty \
+and only characters')
         self.__name = name_value
 
     @program.setter
     def program(self, program_value: str) -> None:
         if not isinstance(program_value, str):
             raise TypeError(f'{program_value} must be string')
-        if len(program_value) < 1 or not re.fullmatch(r'[a-zA-Z ]+', program_value):
+        if len(program_value) < 1 or not re.fullmatch(r'[a-zA-Z ]+',
+                                                      program_value):
             raise ValueError(f'{program_value} must not be empty \
 and only characters')
         self.__program = program_value
