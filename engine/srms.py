@@ -30,7 +30,7 @@ class SRMS:
         Return:
             `student (Student)`: student inserted
         '''
-        SRMS.check_if_student_exists(student.id)
+        self.__check_if_student_exists(student.id)
 
         if self.__head is None:
             self.__head = student
@@ -54,17 +54,27 @@ class SRMS:
         Return:
             `student (Student)`: student inserted
         '''
-        SRMS.check_if_student_exists(student.id)
+        self.__check_if_student_exists(student.id)
+        student_position = self.search_student(student_id)
+
+        if not student_position:
+            raise Exception(f'Student {student_id} does not exist')
 
         if self.__head is None:
             return self.insert_student_at_start(student)
 
-        student_position = self.search_student(student_id)
-        temp = student_position # set student_position to temp
-        temp.previous.next = student # set the next value of the temp' next to student
-        student.previous = temp.previous # set the student's previous to temp's previous
-        student.next = temp # set student's next value to temp
-        temp.previous = student # set temp's previous to student
+        temp = student_position  # set student_position to temp
+        if temp.id == self.head.id:
+            self.__head = student
+            student.next = temp
+            temp.previous = student
+            return student
+        # set the next value of the temp'next to student
+        temp.previous.next = student
+        # set the student's previous to temp's previous
+        student.previous = temp.previous
+        student.next = temp  # set student's next value to temp
+        temp.previous = student  # set temp's previous to student
         return student
 
     def insert_student_at_end(self, student: Student) -> Student:
@@ -77,7 +87,7 @@ class SRMS:
         Return:
             `student (Student)`: student inserted
         '''
-        SRMS.check_if_student_exists(student.id)
+        self.__check_if_student_exists(student.id)
 
         if self.__head is not None:
             temp = self.__head
@@ -140,7 +150,14 @@ class SRMS:
             student.previous.next = student.next
         return student
 
-    @classmethod
-    def check_if_student_exists(cls, student_id: str) -> None:
-        if cls.search_student(student_id=student_id):
+    def __check_if_student_exists(self, student_id: str) -> None:
+        '''checks if a student exists
+
+        Args:
+            `student_id` (str): student id to check if exists.
+
+        Return
+            `Exception`
+        '''
+        if self.search_student(student_id):
             raise Exception(f'Student {student_id} already exists!')
